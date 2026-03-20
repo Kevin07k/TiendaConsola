@@ -3,7 +3,7 @@ namespace TiendaConsola;
 public class Producto
 {
     public string Codigo { get; init; }
-    public string Nombre { get; init; }
+    public string Nombre { get; set; }
 
     private double _precio;
 
