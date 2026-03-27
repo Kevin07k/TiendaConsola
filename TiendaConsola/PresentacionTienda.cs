@@ -6,6 +6,7 @@ public class PresentacionTienda
     private Inventario _bodega = new Inventario();
     private Carrito _carrito = new Carrito();
 
+    // TODO: Funcion General
     public void Ejecutar()
     {
         InicializarDatos();
@@ -25,6 +26,8 @@ public class PresentacionTienda
         }
     }
 
+    // TODO: Authenticacion
+
     private void MostrarLogin()
     {
         Console.WriteLine("\n--- LOGIN TIENDA ---");
@@ -38,6 +41,7 @@ public class PresentacionTienda
             Console.WriteLine("Credenciales incorrectas. Presione una tecla...");
             Console.ReadKey();
         }
+
         Console.Clear();
     }
 
@@ -63,21 +67,47 @@ public class PresentacionTienda
         switch (Console.ReadLine())
         {
             case "1":
+                Console.Clear();
                 _bodega.MostrarTodo();
                 Console.ReadKey();
                 break;
-            case "2": AgregarStock(); break;
-            case "3": ActualizarProductoUI(); break;
-            case "4": EliminarProductoUI(); break;
+            case "2":
+                Console.Clear();
+                AgregarStock();
+                break;
+            case "3":
+                Console.Clear();
+                ActualizarProducto();
+                break;
+            case "4":
+                Console.Clear();
+                EliminarProducto();
+                break;
             case "5":
+                Console.Clear();
                 _auth.ListarUsuarios();
                 Console.ReadKey();
                 break;
-            case "6": AgregarUsuarioUI(); break;
-            case "7": ActualizarUsuarioUI(); break;
-            case "8": EliminarUsuarioUI(); break;
-            case "9": _auth.Logout(); break;
-            case "0": Environment.Exit(0); break;
+            case "6":
+                Console.Clear();
+                AgregarUsuario();
+                break;
+            case "7":
+                Console.Clear();
+                ActualizarUsuario();
+                break;
+            case "8":
+                Console.Clear();
+                EliminarUsuario();
+                break;
+            case "9":
+                Console.Clear();
+                _auth.Logout();
+                break;
+            case "0":
+                Console.Clear();
+                Environment.Exit(0);
+                break;
         }
     }
 
@@ -95,17 +125,49 @@ public class PresentacionTienda
         switch (Console.ReadLine())
         {
             case "1":
+                Console.Clear();
                 _bodega.MostrarTodo();
                 Console.ReadKey();
                 break;
-            case "2": Comprar(); break;
+            case "2":
+                Console.Clear();
+                Comprar();
+                break;
             case "3":
-                _carrito.MostrarCarrito();
+                Console.Clear();
+                MostrarCarrito();
                 Console.ReadKey();
                 break;
-            case "9": _auth.Logout(); break;
-            case "0": Environment.Exit(0); break;
+            case "9":
+                Console.Clear();
+                _auth.Logout();
+                break;
+            case "0":
+                Console.Clear();
+                Environment.Exit(0);
+                break;
         }
+    }
+
+    // TODO: Funciones Tienda Compra/Venta
+
+    public void MostrarCarrito()
+    {
+        Console.WriteLine("CARRITO DE COMPRAS");
+
+        double totalFinal = 0;
+
+        for (int i = 0; i < _carrito.Items.Longitud; i++)
+        {
+            ElementoCarrito elemento = _carrito.Items.ObtenerElemento(i);
+            double subtotal = elemento.CalcularSubtotal();
+            totalFinal += subtotal;
+
+            Console.WriteLine($"{elemento.Cantidad,-3} x {elemento.Producto.Nombre,-15} | Subtotal: {subtotal,8}Bs");
+        }
+
+        Console.WriteLine("-------------------------------");
+        Console.WriteLine($"TOTAL A PAGAR: {totalFinal,14}Bs");
     }
 
     private void Comprar()
@@ -131,7 +193,6 @@ public class PresentacionTienda
 
     private void AgregarStock()
     {
-        Console.Clear();
         Console.WriteLine("\n--- NUEVO PRODUCTO ---");
         Console.Write("Codigo: ");
         string cod = Console.ReadLine()!;
@@ -147,7 +208,7 @@ public class PresentacionTienda
         Console.ReadKey();
     }
 
-    private void EliminarProductoUI()
+    private void EliminarProducto()
     {
         Console.Write("Ingrese el codigo del producto a eliminar: ");
         string cod = Console.ReadLine()!;
@@ -155,7 +216,7 @@ public class PresentacionTienda
         Console.ReadKey();
     }
 
-    private void ActualizarProductoUI()
+    private void ActualizarProducto()
     {
         Console.Write("Codigo del producto a modificar: ");
         string cod = Console.ReadLine()!;
@@ -167,52 +228,64 @@ public class PresentacionTienda
         Console.ReadKey();
     }
 
-    private void AgregarUsuarioUI()
+    // TODO: Funciones de Usuario
+
+    private void AgregarUsuario()
     {
-        Console.Clear();
         Console.WriteLine("--- REGISTRO DE USUARIO ---");
-        Console.Write("Nombre de Usuario: "); string user = Console.ReadLine()!;
-        Console.Write("Contraseña: "); string pass = Console.ReadLine()!;
-    
+        Console.Write("Nombre de Usuario: ");
+        string user = Console.ReadLine()!;
+        Console.Write("Contraseña: ");
+        string pass = Console.ReadLine()!;
+
         _auth.ListarRoles(); // Mostramos los roles para que elija
         Console.Write("Seleccione el ID del Rol: ");
         int rolId = int.Parse(Console.ReadLine()!);
         Rol? rolElegido = _auth.ObtenerRolPorId(rolId);
 
-        if (rolElegido != null) {
+        if (rolElegido != null)
+        {
             _auth.RegistrarUsuario(new Usuario(user, pass, rolElegido));
             Console.WriteLine("Usuario creado con exito.");
-        } else {
+        }
+        else
+        {
             Console.WriteLine("Rol no valido. Registro cancelado.");
         }
+
         Console.ReadKey();
     }
-    
-    private void ActualizarUsuarioUI()
+
+    private void ActualizarUsuario()
     {
-        Console.Clear();
         _auth.ListarUsuarios();
         Console.Write("\nID del usuario a modificar: ");
         if (int.TryParse(Console.ReadLine(), out int id))
         {
-            Console.Write("Nuevo Nombre: "); string nom = Console.ReadLine()!;
-            Console.Write("Nueva Pass: "); string pass = Console.ReadLine()!;
-        
+            Console.Write("Nuevo Nombre: ");
+            string nom = Console.ReadLine()!;
+            Console.Write("Nueva Pass: ");
+            string pass = Console.ReadLine()!;
+
             _auth.ListarRoles();
             Console.Write("Nuevo Rol (ID): ");
             int rolId = int.Parse(Console.ReadLine()!);
             Rol? nuevoRol = _auth.ObtenerRolPorId(rolId);
 
-            if (nuevoRol != null) {
+            if (nuevoRol != null)
+            {
                 _auth.ActualizarUsuario(id, nom, pass, nuevoRol);
-            } else {
+            }
+            else
+            {
                 Console.WriteLine("Rol invalido.");
             }
         }
+
         Console.ReadKey();
     }
 
-    private void EliminarUsuarioUI()
+    private void EliminarUsuario()
     {
         _auth.ListarUsuarios();
         Console.Write("\nIngrese el ID del usuario a eliminar: ");
@@ -220,6 +293,8 @@ public class PresentacionTienda
             _auth.EliminarUsuario(id);
         Console.ReadKey();
     }
+
+    // TODO: Datos de Prueba
 
     private void InicializarDatos()
     {
@@ -236,7 +311,7 @@ public class PresentacionTienda
         _auth.RegistrarRol(clienteRol);
         clienteRol.AgregarPermiso(pCompra);
 
-        // 2. Usuarios: Un Admin y un Normal
+        //? 2. Usuarios: Un Admin y un Normal
         _auth.RegistrarUsuario(new Usuario("brandon", "123", adminRol));
         _auth.RegistrarUsuario(new Usuario("cliente", "456", clienteRol));
 
