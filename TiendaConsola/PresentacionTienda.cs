@@ -1,3 +1,5 @@
+using TiendaConsola.EstructuraDeDatos;
+
 namespace TiendaConsola;
 
 public class PresentacionTienda
@@ -5,6 +7,9 @@ public class PresentacionTienda
     private Autenticacion _auth = new Autenticacion();
     private Inventario _bodega = new Inventario();
     private Carrito _carrito = new Carrito();
+    TipoCliente Regular = new TipoCliente("Regular");
+    TipoCliente VIP = new TipoCliente("VIP");
+    // private TADVector<TipoCliente> TiposClientes = new TADVector<TipoCliente>();
 
     // TODO: Funcion General
     public void Ejecutar()
@@ -163,6 +168,10 @@ public class PresentacionTienda
             double subtotal = elemento.CalcularSubtotal();
             totalFinal += subtotal;
 
+            /*
+             * Aqui implementamos LA CONDICION PARA APLICAR DESCUENTO
+             * totalFinal * Descuentos() = totalFinalConDescuentos
+             */
             Console.WriteLine($"{elemento.Cantidad,-3} x {elemento.Producto.Nombre,-15} | Subtotal: {subtotal,8}Bs");
         }
 
@@ -183,6 +192,7 @@ public class PresentacionTienda
         Console.Write("Cantidad a comprar: ");
         if (int.TryParse(Console.ReadLine(), out int cant))
         {
+            Console.WriteLine("Agregando a carrito");
             _carrito.Agregar(codigo, cant, _bodega);
         }
         else
@@ -243,8 +253,29 @@ public class PresentacionTienda
         int rolId = int.Parse(Console.ReadLine()!);
         Rol? rolElegido = _auth.ObtenerRolPorId(rolId);
 
+        TipoCliente? tipo = null;
+        if (rolElegido.Nombre == "Cliente")
+        {
+            Console.Write("Que Tipo de Cliente es : ");
+            Console.WriteLine("1. Regular");
+            Console.WriteLine("2. VIP");
+            int tipoCliente = int.Parse(Console.ReadLine()!);
+            if (tipoCliente == 1)
+            {
+                tipo = Regular;
+            }
+            else
+            {
+                tipo = VIP;
+            }
+        }
+        
         if (rolElegido != null)
         {
+            if (tipo == Regular)
+            {
+                
+            }
             _auth.RegistrarUsuario(new Usuario(user, pass, rolElegido));
             Console.WriteLine("Usuario creado con exito.");
         }
@@ -252,7 +283,7 @@ public class PresentacionTienda
         {
             Console.WriteLine("Rol no valido. Registro cancelado.");
         }
-
+        
         Console.ReadKey();
     }
 
@@ -293,7 +324,11 @@ public class PresentacionTienda
             _auth.EliminarUsuario(id);
         Console.ReadKey();
     }
-
+    
+    // TODO: Funciones Administrativas de Descuentos
+    
+    
+    
     // TODO: Datos de Prueba
 
     private void InicializarDatos()

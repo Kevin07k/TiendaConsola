@@ -9,9 +9,7 @@ public class Carrito
     public void Agregar(string codigo, int cantidad ,Inventario bodega)
     {
         Producto? productoDeBodega = bodega.Retirar(codigo, cantidad);
-
-        if (productoDeBodega != null) return;
-
+        if (productoDeBodega == null) return;
         ElementoCarrito? itemExistente = null;
         for (int i = 0; i < Items.Longitud; i++)
         {
